@@ -1,0 +1,6 @@
+{% for lead in leads %}
+id:{{lead.id}}
+name:<a href="{{lead.get_absolute_url}}">{{lead}}</a>
+age:{{lead.age}}
+<br>
+{% endfor %}
