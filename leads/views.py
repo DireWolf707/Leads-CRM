@@ -37,6 +37,7 @@ class LeadDetailView(View):
 
 
 # TODO: CHECK FOR IMAGE UPLOAD/CHANGE
+# TODO: Change/add django message to Form invalid/valid
 class LeadCreateUpdateView(View):
     def get(self, request, *args, **kwargs):
         instance = None

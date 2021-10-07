@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block script %}
+{% include 'modal/modal_scripts.html' %}
+{% endblock script %}
+
 {% block content %}
 <section class="text-gray-600 body-font overflow-hidden">
   <div class="container px-5 py-24 mx-auto">
@@ -9,9 +13,11 @@
         <h1 class="text-gray-900 text-3xl title-font font-medium mb-4">{{lead.get_full_name}}</h1>
         <div class="flex mb-4">
           <a class="flex-grow text-indigo-500 border-b-2 border-indigo-500 py-2 text-lg px-1">Description</a>
-          
+
         </div>
-        <p class="leading-relaxed mb-4">Fam locavore kickstarter distillery. Mixtape chillwave tumeric sriracha taximy chia microdosing tilde DIY. XOXO fam inxigo juiceramps cornhole raw denim forage brooklyn. Everyday carry +1 seitan poutine tumeric. Gastropub blue bottle austin listicle pour-over, neutra jean.</p>
+        <p class="leading-relaxed mb-4">Fam locavore kickstarter distillery. Mixtape chillwave tumeric sriracha taximy
+          chia microdosing tilde DIY. XOXO fam inxigo juiceramps cornhole raw denim forage brooklyn. Everyday carry +1
+          seitan poutine tumeric. Gastropub blue bottle austin listicle pour-over, neutra jean.</p>
         <div class="flex border-t border-gray-200 py-2">
           <span class="text-gray-500">Age</span>
           <span class="ml-auto text-gray-900">{{lead.age}}</span>
@@ -25,30 +31,29 @@
           <span class="ml-auto text-gray-900">+5687676874</span>
         </div>
         <div class="flex">
-          <a href= "{% url 'leads:update' id %}" class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">Update</a>
+          <button hx-get="{% url 'leads:update' id %}" hx-trigger="click" hx-target="#myModal" hx-swap="innerHTML"
+            onclick="document.getElementById('myModal').showModal()" id="btn"
+            class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
+            Update
+          </button>
           <form method="post">
             {% csrf_token %}
-            <button type="submit" class="rounded-full w-10 h-10 p-0 border-0 bg-gray-200 inline-flex items-center justify-center ml-4 text-red-600 hover:bg-red-400 hover:text-gray-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-            </svg>
-          </button>
+            <button type="submit"
+              class="rounded-full w-10 h-10 p-0 border-0 bg-gray-200 inline-flex items-center justify-center ml-4 text-red-600 hover:bg-red-400 hover:text-gray-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                  clip-rule="evenodd" />
+              </svg>
+            </button>
           </form>
         </div>
       </div>
-      <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src="https://dummyimage.com/400x400">
+      <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded"
+        src="https://dummyimage.com/400x400">
     </div>
   </div>
 </section>
 
-
-
-
-
-
-
-
-
-
-
+{% include 'modal/modal.html' %}
 {% endblock content %}

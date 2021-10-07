@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block script %}
+{% include 'modal/modal_scripts.html' %}
+{% endblock script %}
+
 {% block content %}
 
 <section class="text-gray-600 body-font">
@@ -9,7 +13,9 @@
                 <h1 class="text-3xl">Leads</h1>
             </div>
             <div>
-                <a href="{% url 'leads:create' %}" class="hover:text-blue-600">+ create new lead</a>
+                <button hx-get="{% url 'leads:create' %}" hx-trigger="click" hx-target="#myModal" hx-swap="innerHTML"
+                    onclick="document.getElementById('myModal').showModal()" id="btn" class="hover:text-blue-600">
+                    + create new lead</button>
             </div>
         </div>
         <hr>
@@ -42,4 +48,5 @@
         </div>
 </section>
 
+{% include 'modal/modal.html' %}
 {% endblock content %}

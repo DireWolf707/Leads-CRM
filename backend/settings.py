@@ -136,5 +136,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'test@mail.com'
+DEFAULT_FROM_EMAIL = 'dj-crm@mail.com'
 AUTH_USER_MODEL = 'accounts.User'
+LOGIN_REDIRECT_URL = 'leads:list'
+LOGOUT_REDIRECT_URL = 'home'
