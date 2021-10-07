@@ -1,0 +1,7 @@
+
+{% if id %}Update{% else %}Create{% endif %}
+<form action="{% if id %}{% url 'leads:update' id %}{% else %}{% url 'leads:create' %}{% endif %}" method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit">Submit</button>
+</form>
