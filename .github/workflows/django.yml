@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      run: printenv 
+    - run: printenv 
     - name: Copying Code
       uses: actions/checkout@v2
     - name: Set up Python 3.8
