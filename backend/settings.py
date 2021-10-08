@@ -83,11 +83,20 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+default_db = {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'mydatabase',
+    'USER': 'mydatabaseuser',
+    'PASSWORD': 'mypassword',
+    'HOST': '127.0.0.1',
+    'PORT': '5432',
+} if os.environ.get('GITHUB_JOB') else {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': BASE_DIR / 'db.sqlite3',
+}
+
 DATABASES = {
-    'default': os.environ.get('DATABASE_URL', {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    })
+    'default': os.environ.get('DATABASE_URL', default_db)
 }
 
 
