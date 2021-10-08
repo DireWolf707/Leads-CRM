@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'leads',
+    'agents',
 ]
 
 MIDDLEWARE = [
@@ -138,5 +139,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'dj-crm@mail.com'
 AUTH_USER_MODEL = 'accounts.User'
+LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'leads:list'
 LOGOUT_REDIRECT_URL = 'home'

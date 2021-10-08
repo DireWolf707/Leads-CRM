@@ -2,13 +2,26 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.crypto import get_random_string
 from django.urls import reverse
+from django.db.models.signals import post_save
 
 User = get_user_model()
+
+
+class AgentManager(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='agent_manager'
+    )
+
+    def __str__(self) -> str:
+        return str(self.user)
 
 
 class Agent(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='user_agent'
+    )
+    agent_manager = models.ForeignKey(
+        AgentManager, on_delete=models.CASCADE, related_name='agents'
     )
 
     def __str__(self) -> str:
@@ -56,3 +69,11 @@ class Lead(models.Model):
 
 
 # TODO add signal to delete profile pic if Lead gets deleted
+
+
+def create_agent_manager(sender, instance, created, *args, **kwargs):
+    if created:
+        AgentManager.objects.create(user=instance)
+
+
+post_save.connect(create_agent_manager, User)

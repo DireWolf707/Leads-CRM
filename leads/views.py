@@ -4,6 +4,7 @@ from django.views.generic import View
 from .models import Lead
 from django.shortcuts import get_object_or_404
 from .forms import LeadForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class HomeView(View):
@@ -11,14 +12,14 @@ class HomeView(View):
         return render(request, 'home.html')
 
 
-class LeadListView(View):
+class LeadListView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         leads = Lead.objects.all()
         context = {'leads': leads}
         return render(request, 'leads/list.html', context=context)
 
 
-class LeadDetailView(View):
+class LeadDetailView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         id = kwargs['id']
         lead = self.get_object(id)
@@ -38,14 +39,14 @@ class LeadDetailView(View):
 
 # TODO: CHECK FOR IMAGE UPLOAD/CHANGE
 # TODO: Change/add django message to Form invalid/valid
-class LeadCreateUpdateView(View):
+class LeadCreateUpdateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         instance = None
         id = kwargs.get('id')
         if id:
             instance = self.get_object(id)
         form = LeadForm(instance=instance)
-        return self.render_template(form, id)
+        return render(self.request, 'leads/form.html', context={'form': form, 'id': id})
 
     def post(self, request, *args, **kwargs):
         instance = None
@@ -65,10 +66,8 @@ class LeadCreateUpdateView(View):
         return redirect('leads:detail', instance.id)
 
     def is_invalid(self, form, id):
-        return self.render_template(form, id)
-
-    def render_template(self, form, id):
-        return render(self.request, 'leads/form.html', context={'form': form, 'id': id})
+        pass
+        # return self.render_template(form, id)
 
     def get_object(self, id):
         lead = get_object_or_404(Lead, id=id)

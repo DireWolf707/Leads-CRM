@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="flex w-full h-auto justify-center items-center border-b mb-3">
         <div class="flex w-10/12 h-auto py-3 items-center text-2xl font-bold">
-            {% if id %}Update{% else %}Create{% endif %} Lead
+            {% if id %}Update{% else %}Create{% endif %} Agent
         </div>
         <div onclick="document.getElementById('myModal').close();document.getElementById('myModal').innerHTML = 'Loading...';"
             class="flex w-1/12 h-auto justify-center cursor-pointer">
@@ -17,7 +17,7 @@
     </div>
     <!-- Modal Content-->
     <div class="py-4 px-4">
-        <form action="{% if id %}{% url 'leads:update' id %}{% else %}{% url 'leads:create' %}{% endif %}"
+        <form action="{% if id %}{% url 'agents:update' id %}{% else %}{% url 'agents:create' %}{% endif %}"
             method="post">
             {% csrf_token %}
             {{form.as_p}}
