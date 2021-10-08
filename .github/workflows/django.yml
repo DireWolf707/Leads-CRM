@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      run: printenv 
     - name: Copying Code
       uses: actions/checkout@v2
     - name: Set up Python 3.8
@@ -22,7 +23,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Make Migrations
+    - name: Run Migrations
       run: |
         python manage.py migrate
     - name: Run Tests
