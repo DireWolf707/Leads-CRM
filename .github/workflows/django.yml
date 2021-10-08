@@ -10,8 +10,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     steps:
+    - name: Copying Code
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
