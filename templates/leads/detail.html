@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block script %}
+{% if request.user.is_agent_manager %}
 {% include 'modal/modal_scripts.html' %}
+{% endif %}
 {% endblock script %}
 
 {% block content %}
@@ -30,8 +32,8 @@
           <span class="text-gray-500">Cell phone</span>
           <span class="ml-auto text-gray-900">+5687676874</span>
         </div>
-        {% if request.user.is_agent_manager %}
         <div class="flex">
+          {% if request.user.is_agent_manager %}
           <button hx-get="{% url 'leads:update' lead.id %}" hx-trigger="click" hx-target="#myModal" hx-swap="innerHTML"
             onclick="document.getElementById('myModal').showModal()" id="btn"
             class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
@@ -48,8 +50,17 @@
               </svg>
             </button>
           </form>
+          {% else %}
+          <form method="post" action="{% url 'leads:contact' lead.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="contacted" value="{% if lead.contacted %}false{% else %}true{% endif %}">
+            <button
+              class="flex ml-auto text-white border-0 py-2 px-6 focus:outline-none {% if lead.contacted %}bg-red-500 hover:bg-red-600{% else %}bg-indigo-500 hover:bg-indigo-600{% endif %} rounded">
+              {% if lead.contacted %}Not Contacted{% else %}Contacted{% endif %}
+            </button>
+          </form>
+          {% endif %}
         </div>
-        {% endif %}
       </div>
       <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded"
         src="https://dummyimage.com/400x400">
@@ -57,5 +68,7 @@
   </div>
 </section>
 
+{% if request.user.is_agent_manager %}
 {% include 'modal/modal.html' %}
+{% endif %}
 {% endblock content %}

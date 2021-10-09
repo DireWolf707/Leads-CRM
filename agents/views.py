@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.crypto import get_random_string
 from django.contrib.auth import get_user_model
 from django.views import View
+from django.forms import modelform_factory
 from leads.models import Agent
-from .forms import AgentForm
 from .mixins import AgentManagerAndLoginRequiredMixin
 
 User = get_user_model()
@@ -37,23 +37,14 @@ class AgentDetailDeleteView(AgentManagerAndLoginRequiredMixin, View):
 
 # TODO: CHECK FOR IMAGE UPLOAD/CHANGE
 # TODO: Change/add django message to Form invalid/valid
-# TODO: Refactor Code to use dispatch
 class AgentCreateUpdateView(AgentManagerAndLoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        id = kwargs.get('id')
-        instance = None
-        if id:
-            instance = self.get_object(id)
-        form = AgentForm(instance=instance)
+        form, id = self.get_form()
         context = {'form': form, 'id': id}
         return render(self.request, 'agents/form.html', context=context)
 
     def post(self, request, *args, **kwargs):
-        id = kwargs.get('id')
-        instance = None
-        if id:
-            instance = self.get_object(id)
-        form = AgentForm(request.POST, instance=instance)
+        form, id = self.get_form()
         if form.is_valid():
             return self.form_valid(form, id)
         return self.form_invalid(form)
@@ -61,7 +52,7 @@ class AgentCreateUpdateView(AgentManagerAndLoginRequiredMixin, View):
     def form_valid(self, form, id):
         if id:
             user = form.save()
-            agent = user.agent
+            agent = self.agent
         else:
             user = form.save(commit=False)
             user.is_agent = True
@@ -75,11 +66,25 @@ class AgentCreateUpdateView(AgentManagerAndLoginRequiredMixin, View):
         return redirect("agents:detail", agent.id)
 
     def form_invalid(self, form):
-        print(form)
         pass
 
     def get_object(self, id):
-        agent = get_object_or_404(
+        self.agent = get_object_or_404(
             Agent, id=id, agent_manager=self.request.user.agent_manager
         )
-        return agent.user
+        return self.agent.user
+
+    def get_form(self):
+        instance = None
+        id = self.kwargs.get('id')
+        if id:
+            AgentForm = modelform_factory(User, fields=(
+                'username', 'first_name', 'last_name')
+            )
+            instance = self.get_object(id)
+        else:
+            AgentForm = modelform_factory(User, fields=('email', 'username',
+                                                        'first_name', 'last_name')
+                                          )
+        form = AgentForm(data=self.request.POST or None, instance=instance)
+        return form, id

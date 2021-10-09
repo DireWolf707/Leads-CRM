@@ -16,23 +16,27 @@ class HomeView(View):
 
 class LeadListView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        return render(request, 'leads/list.html', context=context)
-
-    def get_context_data(self):
         user = self.request.user
         context = dict()
         leads = Lead.objects.all()
         if user.is_agent:
-            context["leads"] = leads.filter(agent=user.agent)
+            agent = user.agent
+            context["contacted_leads"] = leads.filter(
+                agent=agent, contacted=True
+            )
+            context["uncontacted_leads"] = leads.filter(
+                agent=agent, contacted=False
+            )
+            return render(request, 'leads/agent_leads_list.html', context=context)
         else:
-            context["leads"] = leads.filter(
-                agent_manager=user.agent_manager, agent__isnull=False
+            agent_manager = user.agent_manager
+            context["assigned_leads"] = leads.filter(
+                agent_manager=agent_manager, agent__isnull=False
             )
             context["unassigned_leads"] = Lead.objects.filter(
-                agent_manager=user.agent_manager, agent__isnull=True
+                agent_manager=agent_manager, agent__isnull=True
             )
-        return context
+            return render(request, 'leads/agent_manager_leads_list.html', context=context)
 
 
 class LeadDetailDeleteView(LoginRequiredMixin, View):
@@ -105,3 +109,14 @@ class LeadCreateUpdateView(AgentManagerAndLoginRequiredMixin, View):
             self.agent_manager, data=self.request.POST or None, instance=instance
         )
         return form, id
+
+
+class LeadContactView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        contacted = self.request.POST.get('contacted')
+        if contacted and request.user.is_agent:
+            contacted = True if contacted == 'true' else False
+            Lead.objects.filter(
+                id=kwargs['id'], agent=request.user.agent
+            ).update(contacted=contacted)
+        return redirect('leads:list')
