@@ -1,6 +1,24 @@
-{{context}}
-<form method="post">
-    {% csrf_token %}
-    {{form.as_p}}
-    <button type="submit">{{type}}</button>
-</form>
+{% extends 'base.html' %}
+{% load tailwind_filters %}
+{% block content %}
+<div class="max-w-lg mx-auto my-8 p-6 border-2 rounded-lg">
+    <form method="post" class='mb-4'>
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="w-full text-white bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-md">
+            {{type}}
+        </button>
+    </form>
+    {% if type == 'Login' %}
+    <div class="flex justify-between px-2">
+        <a href="{% url 'accounts:signup' %}" class='text-indigo-400 hover:text-indigo-600'>New ?</a>
+        <a href="{% url 'accounts:password_reset' %}" class='text-indigo-400 hover:text-indigo-600'>Forget password
+            ?</a>
+    </div>
+    {% else %}
+    <div class="flex justify-end px-2">
+        <a href="{% url 'accounts:login' %}" class='text-indigo-400 hover:text-indigo-600'>Already have an account ?</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}

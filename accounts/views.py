@@ -1,5 +1,6 @@
+from django.urls.base import reverse_lazy
 from django.views.generic import CreateView
-from django.contrib.auth.views import LoginView as BaseLoginView
+from django.contrib.auth import views
 from .forms import UserCreationForm
 from django.shortcuts import redirect
 from django.contrib.auth import login
@@ -19,6 +20,18 @@ class SignupView(CreateView):
         return redirect('leads:list')
 
 
-class LoginView(BaseLoginView):
+class LoginView(views.LoginView):
     template_name = 'accounts/accounts.html'
     extra_context = {'type': 'Login'}
+
+
+class PasswordResetView(views.PasswordResetView):
+    template_name = 'accounts/password_reset_form.html'
+    success_url = reverse_lazy('accounts:password_reset_done')
+    email_template_name = 'accounts/mail/password_reset_email.html'
+    subject_template_name = 'accounts/mail/password_reset_subject.txt'
+
+
+class PasswordResetConfirmView(views.PasswordResetConfirmView):
+    success_url = reverse_lazy('accounts:password_reset_complete')
+    template_name = 'accounts/password_reset_confirm.html'

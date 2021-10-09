@@ -1,3 +1,4 @@
+{% load tailwind_filters %}
 <div class="flex flex-col w-full h-auto ">
     <!-- Header -->
     <div class="flex w-full h-auto justify-center items-center border-b mb-3">
@@ -20,8 +21,10 @@
         <form action="{% if id %}{% url 'agents:update' id %}{% else %}{% url 'agents:create' %}{% endif %}"
             method="post">
             {% csrf_token %}
-            {{form.as_p}}
-            <button type="submit">Submit</button>
+            {{ form|crispy }}
+            <button type="submit" class="w-full text-white bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-md">
+            {% if id %}Update{% else %}Create{% endif %}
+        </button>
         </form>
     </div>
     <!-- End of Modal Content-->

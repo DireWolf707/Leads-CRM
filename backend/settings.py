@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+# TODO: GROUP ALL PRODUCTION CODE
+
 from pathlib import Path
 import os
 import django_heroku
@@ -43,9 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Local Apps
     'accounts',
     'leads',
     'agents',
+    # Third Party
+    'crispy_forms',
+    "crispy_tailwind",
 ]
 
 MIDDLEWARE = [
@@ -139,12 +145,21 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'dj-crm@mail.com'
+
+# Custom User
 AUTH_USER_MODEL = 'accounts.User'
+
+# Auth URL
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'leads:list'
 LOGOUT_REDIRECT_URL = 'home'
 
+# Crispy Forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+CRISPY_TEMPLATE_PACK = "tailwind"
 
 django_heroku.settings(locals())

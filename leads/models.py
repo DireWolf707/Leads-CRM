@@ -18,7 +18,7 @@ class AgentManager(models.Model):
 
 class Agent(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name='user_agent'
+        User, on_delete=models.CASCADE, related_name='agent'
     )
     agent_manager = models.ForeignKey(
         AgentManager, on_delete=models.CASCADE, related_name='agents'
@@ -48,7 +48,10 @@ class Lead(models.Model):
         upload_to=profile_pic, blank=True, null=True
     )
     agent = models.ForeignKey(
-        Agent, on_delete=models.SET_NULL, related_name='leads', null=True
+        Agent, on_delete=models.SET_NULL, related_name='agent_leads', null=True, blank=True
+    )
+    agent_manager = models.ForeignKey(
+        AgentManager, on_delete=models.CASCADE, related_name='agent_manager_leads'
     )
 
     def get_full_name(self):
@@ -69,11 +72,12 @@ class Lead(models.Model):
 
 
 # TODO add signal to delete profile pic if Lead gets deleted
-
+# TODO add signal to delete AgentManger if User gets deleted
 
 def create_agent_manager(sender, instance, created, *args, **kwargs):
     if created:
-        AgentManager.objects.create(user=instance)
+        if instance.is_agent_manager:
+            AgentManager.objects.create(user=instance)
 
 
 post_save.connect(create_agent_manager, User)
