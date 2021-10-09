@@ -43,6 +43,9 @@ jobs:
     - name: Run Migrations
       run: |
         python manage.py migrate
+    - name: Collect Staticfiles
+      run: |
+        python manage.py collectstatic --noinput 
     - name: Coverage Report
       run: |
         coverage run --source='.' manage.py test
