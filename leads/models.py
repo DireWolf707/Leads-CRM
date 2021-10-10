@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils.crypto import get_random_string
 from django.urls import reverse
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from django.utils.crypto import get_random_string
 
 User = get_user_model()
 
@@ -13,6 +14,7 @@ class AgentManager(models.Model):
     )
 
     def __str__(self) -> str:
+        """Returns string value"""
         return str(self.user)
 
 
@@ -25,11 +27,12 @@ class Agent(models.Model):
     )
 
     def __str__(self) -> str:
+        """Returns string value"""
         return str(self.user)
 
 
-def profile_pic(instance, filename):
-    return f'profile/{instance.get_full_name()} #{get_random_string(length=10)}/{filename}'
+def lead_profile_pic(instance, filename):
+    return f'leads/{instance.get_full_name()} #{get_random_string(10)}/{filename}'
 
 
 class Lead(models.Model):
@@ -45,7 +48,7 @@ class Lead(models.Model):
     source = models.CharField(max_length=2, choices=Source.choices,
                               default=Source.YOUTUBE)
     profile_picture = models.ImageField(
-        upload_to=profile_pic, blank=True, null=True
+        upload_to=lead_profile_pic, blank=True, null=True
     )
     agent = models.ForeignKey(
         Agent, on_delete=models.SET_NULL, related_name='agent_leads', null=True, blank=True
@@ -62,6 +65,7 @@ class Lead(models.Model):
         return full_name.strip()
 
     def __str__(self) -> str:
+        """Returns string value"""
         return self.get_full_name()
 
     def get_absolute_url(self):
@@ -71,13 +75,14 @@ class Lead(models.Model):
         return reverse("leads:detail", kwargs={"id": self.id})
 
 
-# TODO add signal to delete profile pic if Lead gets deleted
-# TODO add signal to delete AgentManger if User gets deleted
-
+@receiver(post_save, sender=User)
 def create_agent_manager(sender, instance, created, *args, **kwargs):
     if created:
         if instance.is_agent_manager:
             AgentManager.objects.create(user=instance)
 
 
-post_save.connect(create_agent_manager, User)
+@receiver(post_delete, sender=Lead)
+@receiver(post_delete, sender=User)
+def delete_profile_pic(sender, instance, *args, **kwargs):
+    instance.profile_picture.delete(save=False)

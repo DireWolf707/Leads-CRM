@@ -4,8 +4,7 @@ from django.contrib.auth import views
 from .forms import UserCreationForm
 from django.shortcuts import redirect
 from django.contrib.auth import login
-
-# TODO: send mail on successful signup
+from django.core.mail import send_mail
 
 
 class SignupView(CreateView):
@@ -14,9 +13,11 @@ class SignupView(CreateView):
     extra_context = {'type': 'Signup'}
 
     def form_valid(self, form):
-        """If the form is valid, save the associated model and login the user"""
+        """If the form is valid, save the associated model and login the user and send mail"""
         self.object = form.save()
         login(self.request, self.object)
+        send_mail(subject="New Signup", message="Your account has been successfully created",
+                  from_email=None, recipient_list=[self.object.email])
         return redirect('leads:list')
 
 

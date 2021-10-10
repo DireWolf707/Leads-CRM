@@ -19,12 +19,12 @@
     <!-- Modal Content-->
     <div class="py-4 px-4">
         <form action="{% if id %}{% url 'agents:update' id %}{% else %}{% url 'agents:create' %}{% endif %}"
-            method="post">
+            method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form|crispy }}
             <button type="submit" class="w-full text-white bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-md">
-            {% if id %}Update{% else %}Create{% endif %}
-        </button>
+                {% if id %}Update{% else %}Create{% endif %}
+            </button>
         </form>
     </div>
     <!-- End of Modal Content-->
