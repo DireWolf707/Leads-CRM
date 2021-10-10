@@ -47,6 +47,8 @@ class Lead(models.Model):
     contacted = models.BooleanField(default=False)
     source = models.CharField(max_length=2, choices=Source.choices,
                               default=Source.YOUTUBE)
+    description = models.TextField(blank=False, null=False)
+    cell_phone = models.CharField(max_length=20)
     profile_picture = models.ImageField(
         upload_to=lead_profile_pic, blank=True, null=True
     )
