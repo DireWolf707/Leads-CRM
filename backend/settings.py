@@ -149,6 +149,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Config for external email service
+"""
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# Host for sending e-mail.
+EMAIL_HOST = ''
+# Port for sending e-mail.
+EMAIL_PORT = 1025
+# Optional SMTP authentication information for EMAIL_HOST.
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = False
+EMAIL_TIMEOUT = None
+"""
 DEFAULT_FROM_EMAIL = 'dj-crm@mail.com'
 
 # Custom User
@@ -168,5 +182,15 @@ if DEBUG:
     ALLOWED_HOSTS = ['*']
 else:
     ALLOWED_HOSTS = ['*.herokuapp.com']
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_SECONDS = 365*24*60*60
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    X_FRAME_OPTIONS = "DENY"
 
 django_heroku.settings(locals())
